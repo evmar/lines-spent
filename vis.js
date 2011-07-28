@@ -97,3 +97,5 @@ commits.append('svg:rect')
 commits.append('svg:title')
   .text(function(d) { return d.text; })
 ;
+
+d3.select('#git').text(kData.git_args.join(' '));
