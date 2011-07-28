@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<style>
+body {
+  font-family: sans-serif;
+  font-size: 0.8em;
+  max-width: 50em;
+}
+h1 {
+  font-weight: normal;
+}
+
+blockquote {
+  font-family: serif;
+  font-size: 120%;
+}
+
+.tick {
+  font-size: 12px;
+}
+.positive {
+  fill: #d55;
+}
+.negative {
+  fill: #5d5;
+}
+</style>
+<body>
+<script src='/home/evanm/projects/src/d3/d3.js'></script>
+<script src='json'></script>
+<h1>code balance</h1>
+
+<blockquote>...if we wish to count lines of code, we should not regard
+them as "lines produced" but as "lines spent"...<br>
+&mdash; Dijkstra</blockquote>
+
+<p>This visualization shows the accumulated effects of my changes to
+the tree.</p>
+
+<p>Each bar represents a commit. Red shows added lines, green removed lines.
+Each bar is centered at the cumulative added/removed count from my commits:
+the leftmost bar is centered at 0, and if it net added code, the next bar
+is raised accordingly.</p>
+
+<p>Commits that added and removed the same number of lines are elided.</p>
+
+<div id='chart'></div>
+<script src='vis.js'></script>
+</body>
