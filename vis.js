@@ -26,8 +26,9 @@ var labelmargin = 2;
 var w = 300;
 var h = data.length * (bargirth + 4) + (margin * 2);
 
+max = Math.max(max, -min);
 var x = d3.scale.linear()
-  .domain([min, max])
+  .domain([-max, max])
   .range([margin, w - margin]);
 var y = d3.scale.linear()
   .domain([0, data.length])

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
+<title>lines spent</title>
 <style>
 body {
   font-family: sans-serif;
   max-width: 50em;
+  margin: 2ex;
 }
 h1 {
   font-weight: normal;
 }
-
 blockquote {
   font-family: serif;
   font-size: 120%;
@@ -21,20 +22,20 @@ line {
   font-size: 12px;
 }
 .positive {
-  fill: #d55;
+  fill: #5d5;
 }
 .negative {
-  fill: #5d5;
+  fill: #d55;
 }
 
 #vis {
-  margin-left: 10ex;
+  margin: 5ex 10ex;
 }
 </style>
 <body>
 <script src='/home/evanm/projects/src/d3/d3.js'></script>
 <script src='json'></script>
-<h1>code balance</h1>
+<h1>lines spent</h1>
 
 <blockquote>...if we wish to count lines of code, we should not regard
 them as "lines produced" but as "lines spent"...<br>
@@ -50,7 +51,7 @@ and if it net added code, the next bar is shifted accordingly.</p>
 
 <p>Commits that added and removed the same number of lines are elided,
 as are commits that had &gt;1000 adds or deletes (those typically were
-imports or removals of large third-party modules)..</p>
+imports or removals of large third-party modules).</p>
 
 <div id='vis'></div>
 <script src='vis.js'></script>
