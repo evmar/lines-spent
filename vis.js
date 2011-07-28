@@ -1,22 +1,22 @@
 var data = [];
 var baseline = 0;
 var min = 0, max = 0;
-for (var i = 0; i < kData.length; ++i) {
-  var commit = kData[i][0], msg = kData[i][1],
-      plus = kData[i][2], minus = kData[i][3];
+for (var i = 0; i < kData.changes.length; ++i) {
+  var commit = kData.changes[i];
 
-  if (plus > 1000)
+  if (commit.add > 1000)
     continue;
-  if (minus > 1000)
+  if (commit.del > 1000)
     continue;
 
-  data.push({text: msg, baseline: baseline, plus: plus, minus: minus});
-  if (baseline - minus < min)
-    min = baseline - minus;
-  if (baseline + plus > max)
-    max = baseline + plus;
+  commit.baseline = baseline;
+  data.push(commit);
+  if (baseline - commit.del < min)
+    min = baseline - commit.del;
+  if (baseline + commit.add > max)
+    max = baseline + commit.add;
 
-  baseline += plus - minus;
+  baseline += commit.add - commit.del;
 }
 
 var bargirth = 8;
@@ -83,15 +83,15 @@ commits.append('svg:rect')
   .attr('height', bargirth)
   .attr('x', function(d) { return x(d.baseline); })
   .attr('y', 0)
-  .attr('width', function(d) { return Math.abs(x(d.baseline + d.plus) - x(d.baseline)); })
+  .attr('width', function(d) { return Math.abs(x(d.baseline + d.add) - x(d.baseline)); })
 ;
 
 commits.append('svg:rect')
   .attr('class', 'negative')
   .attr('height', bargirth)
-  .attr('x', function(d) { return x(d.baseline - d.minus); })
+  .attr('x', function(d) { return x(d.baseline - d.del); })
   .attr('y', 0)
-  .attr('width', function(d) { return Math.abs(x(d.baseline - d.minus) - x(d.baseline)); })
+  .attr('width', function(d) { return Math.abs(x(d.baseline - d.del) - x(d.baseline)); })
 ;
 
 commits.append('svg:title')
