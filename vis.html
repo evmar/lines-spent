@@ -2,7 +2,6 @@
 <style>
 body {
   font-family: sans-serif;
-  font-size: 0.8em;
   max-width: 50em;
 }
 h1 {
@@ -14,6 +13,10 @@ blockquote {
   font-size: 120%;
 }
 
+line {
+  stroke: black;
+}
+
 .tick {
   font-size: 12px;
 }
@@ -22,6 +25,10 @@ blockquote {
 }
 .negative {
   fill: #5d5;
+}
+
+#vis {
+  margin-left: 10ex;
 }
 </style>
 <body>
@@ -36,13 +43,15 @@ them as "lines produced" but as "lines spent"...<br>
 <p>This visualization shows the accumulated effects of my changes to
 the tree.</p>
 
-<p>Each bar represents a commit. Red shows added lines, green removed lines.
-Each bar is centered at the cumulative added/removed count from my commits:
-the leftmost bar is centered at 0, and if it net added code, the next bar
-is raised accordingly.</p>
+<p>Time flows down.  Each bar represents a commit. Red shows added
+lines, green removed lines.  Each bar is centered at the cumulative
+added/removed count from my commits: the first bar is centered at 0,
+and if it net added code, the next bar is shifted accordingly.</p>
 
-<p>Commits that added and removed the same number of lines are elided.</p>
+<p>Commits that added and removed the same number of lines are elided,
+as are commits that had &gt;1000 adds or deletes (those typically were
+imports or removals of large third-party modules)..</p>
 
-<div id='chart'></div>
+<div id='vis'></div>
 <script src='vis.js'></script>
 </body>

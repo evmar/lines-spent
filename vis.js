@@ -5,10 +5,12 @@ for (var i = 0; i < kData.length; ++i) {
   var commit = kData[i][0], msg = kData[i][1],
       plus = kData[i][2], minus = kData[i][3];
 
-  if (plus == minus)
+  if (plus > 1000)
+    continue;
+  if (minus > 1000)
     continue;
 
-  data.push({text: msg, y: baseline, plus: plus, minus: minus});
+  data.push({text: msg, baseline: baseline, plus: plus, minus: minus});
   if (baseline - minus < min)
     min = baseline - minus;
   if (baseline + plus > max)
@@ -17,75 +19,80 @@ for (var i = 0; i < kData.length; ++i) {
   baseline += plus - minus;
 }
 
-var barwidth = 8;
-var margin = 10;
-var labelwidth = 20;
+var bargirth = 8;
+var margin = 0;
+var labelheight = 10;
 var labelmargin = 2;
-var w = data.length * (barwidth + 4) + (margin * 2);
-var h = 150;
+var w = 300;
+var h = data.length * (bargirth + 4) + (margin * 2);
 
 var x = d3.scale.linear()
-  .domain([0, data.length])
-  .range([margin + labelwidth + labelmargin, w - margin - labelwidth - labelmargin]);
-var y = d3.scale.linear()
   .domain([min, max])
-  .range([h - margin, margin]);
+  .range([margin, w - margin]);
+var y = d3.scale.linear()
+  .domain([0, data.length])
+  .range([margin + labelheight + labelmargin, h - margin - labelheight - labelmargin]);
 
-var vis = d3.select('#chart')
+var vis = d3.select('#vis')
   .append('svg:svg')
     .attr('width', w)
     .attr('height', h)
 ;
+
+var ticks = vis.selectAll('text.tick')
+    .data(x.ticks(5))
+;
+ticks.enter().append('svg:text')
+    .attr('class', 'tick')
+    .attr('x', x)
+    .attr('y', y(0) - labelmargin)
+    .attr('text-anchor', 'middle')
+    .text(String)
+;
+ticks.enter().append('svg:text')
+    .attr('class', 'tick')
+    .attr('x', x)
+    .attr('y', y(data.length) + labelmargin)
+    .attr('dy', '0.8em')
+    .attr('text-anchor', 'middle')
+    .text(String)
+;
+
+ticks = vis.selectAll('line.tick')
+    .data(x.ticks(5));
+ticks.enter().append('svg:line')
+  .attr('x1', x)
+  .attr('x2', x)
+  .attr('y1', y(0))
+  .attr('y2', y(data.length))
+  .style('stroke', function(d) { return d == 0 ? 'black' : 'lightgray'; })
+;
+
 
 var commitbox = vis.append('svg:g');
 
 var commits = commitbox.selectAll('.commit')
     .data(data)
   .enter().append('svg:g')
-    .attr('transform', function(d, i) { return 'translate(' + x(i) + ',0)'; })
+    .attr('transform', function(d, i) { return 'translate(0,' + y(i) + ')'; })
 ;
 
 commits.append('svg:rect')
   .attr('class', 'positive')
-  .attr('width', barwidth)
-  .attr('x', 0)
-  .attr('y', function(d) { return y(d.y + d.plus); })
-  .attr('height', function(d) { return Math.abs(y(d.y + d.plus) - y(d.y)); })
+  .attr('height', bargirth)
+  .attr('x', function(d) { return x(d.baseline); })
+  .attr('y', 0)
+  .attr('width', function(d) { return Math.abs(x(d.baseline + d.plus) - x(d.baseline)); })
 ;
 
 commits.append('svg:rect')
   .attr('class', 'negative')
-  .attr('width', barwidth)
-  .attr('x', 0)
-  .attr('y', function(d) { return y(d.y); })
-  .attr('height', function(d) { return Math.abs(y(d.y - d.minus) - y(d.y)); })
+  .attr('height', bargirth)
+  .attr('x', function(d) { return x(d.baseline - d.minus); })
+  .attr('y', 0)
+  .attr('width', function(d) { return Math.abs(x(d.baseline - d.minus) - x(d.baseline)); })
 ;
 
 commits.append('svg:title')
   .text(function(d) { return d.text; })
-;
-
-vis.append('svg:line')
-  .attr('x1', x(0))
-  .attr('x2', x(data.length))
-  .attr('y1', y(0))
-  .attr('y2', y(0))
-  .style('stroke', 'black');
-
-var ticks = vis.selectAll('text.tick')
-    .data(y.ticks(5))
-;
-ticks.enter().append('svg:text')
-    .attr('class', 'tick')
-    .attr('x', x(0) - labelmargin)
-    .attr('y', y)
-    .attr('dy', 3)
-    .attr('text-anchor', 'end')
-    .text(d3.format('+'))
-;
-ticks.enter().append('svg:text')
-    .attr('class', 'tick')
-    .attr('x', x(data.length) + labelmargin)
-    .attr('y', y)
-    .text(d3.format('+'))
 ;
