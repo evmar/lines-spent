@@ -27,8 +27,7 @@ for (var i = 0; i < kData.changes.length; ++i) {
 var barwidth = 8;
 var barspacing = 2;
 
-var kMarginTop = 20;
-var labelheight = 10;
+var kMarginTop = 25;
 var labelmargin = 2;
 var w = data.length * (barwidth + barspacing);
 var h = 300;
@@ -50,7 +49,7 @@ var vis = d3.select('#vis-body')
     .attr('height', h)
 ;
 
-var kTickWidth = 35;
+var kTickWidth = 42;
 var kTickMargin = 2;
 
 d3.select('#vis-body')
