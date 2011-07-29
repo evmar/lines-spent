@@ -5,7 +5,7 @@
 <style>
 body {
   font-family: sans-serif;
-  max-width: 50em;
+  max-width: 45em;
   margin: 2ex;
 }
 h1 {
@@ -35,6 +35,7 @@ line {
 
 #vis {
   position: relative;
+  margin: 2em 0;
 }
 #vis-left {
   position: absolute;
@@ -73,7 +74,7 @@ changes to the tree over the last year.</p>
 represents added lines, red removed lines.  Each bar is centered at
 the cumulative added/removed count from my commits: the first bar is
 centered at 0, and if it net added code, the next bar is shifted
-accordingly.</p>
+accordingly.  Hovering a bar shows part of the commit message.</p>
 
 <div id='vis'>
 <div id='vis-left'></div>
