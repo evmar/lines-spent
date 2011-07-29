@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<head>
+<meta charset=utf-8>
 <title>lines spent</title>
 <style>
 body {
@@ -50,18 +52,22 @@ line {
   margin-right: 20px;
 }
 </style>
+</head>
 <body>
 <script src='/home/evanm/projects/src/d3/d3.min.js'></script>
 <script src='/home/evanm/projects/src/d3/d3.time.min.js'></script>
-<script src='json'></script>
+<script src='json.tony'></script>
 <h1>lines spent</h1>
 
 <blockquote>...if we wish to count lines of code, we should not regard
 them as "lines produced" but as "lines spent"...<br>
 &mdash; Dijkstra</blockquote>
 
-<p>This visualization shows the accumulated effects of my changes to
-the tree.</p>
+<p>For the last while I've thought of my role on Chrome as a
+"janitor": I've touched (and built) enough things throughout the
+codebase that it falls on people like me to make cross-cutting cleanup
+changes.  This visualization shows the accumulated effects of my
+changes to the tree over the last year.</p>
 
 <p>Time flows to the right.  Each bar represents a commit. Green
 represents added lines, red removed lines.  Each bar is centered at
@@ -69,17 +75,20 @@ the cumulative added/removed count from my commits: the first bar is
 centered at 0, and if it net added code, the next bar is shifted
 accordingly.</p>
 
-<p>Commits that added and removed the same number of lines are elided,
-as are commits that had &gt;1000 adds or deletes (those typically were
-imports or removals of large third-party modules).</p>
-
 <div id='vis'>
 <div id='vis-left'></div>
 <div id='vis-body'></div>
 <div id='vis-right'></div>
 </div>
 
+<p>More details: this data was computed via <tt>git
+log <span id='git'></span></tt>.  Commits that had &gt;1000 adds or
+deletes were elided (those typically were imports or removals of large
+third-party modules), as were commits that touched under 5 lines.</p>
 
-<div id='about'>Computed from <tt>git log <span id='git'></span></tt>.</div>
+<p>PS: like any visualization of code contribution, please don't read
+too much into it; some of the most important work I've done was three
+days of thinking followed by a two-line change.</p>
+
 <script src='vis.js'></script>
 </body>

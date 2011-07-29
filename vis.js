@@ -9,6 +9,9 @@ for (var i = 0; i < kData.changes.length; ++i) {
   if (commit.del > 1000)
     continue;
 
+  if (commit.add + commit.del < 5)
+    continue;
+
   commit.baseline = baseline;
   commit.time = new Date(commit.time * 1000);
 
@@ -22,24 +25,24 @@ for (var i = 0; i < kData.changes.length; ++i) {
 }
 
 var barwidth = 8;
-var barspacing = 4;
+var barspacing = 2;
 
-var margin = 0;
+var kMarginTop = 20;
 var labelheight = 10;
 var labelmargin = 2;
-var w = data.length * (barwidth + 4) + (margin * 2);
+var w = data.length * (barwidth + barspacing);
 var h = 300;
 
 
 var x = d3.scale.linear()
   .domain([0, data.length])
-  .range([margin, w - margin]);
+  .range([0, w]);
 var y = d3.scale.linear()
   .domain([min-100, max+100])
-  .range([h - margin, margin]);
+  .range([h, kMarginTop]);
 var timescale = d3.time.scale()
   .domain([data[0].time, data[data.length - 1].time])
-  .range([margin, w - margin]);
+  .range([0, w]);
 
 var vis = d3.select('#vis-body')
   .append('svg:svg')
@@ -66,7 +69,7 @@ d3.select('#vis-left')
     .attr('y', y)
     .attr('dy', '0.5ex')
     .attr('text-anchor', 'end')
-    .text(String)
+    .text(d3.format('+'))
 ;
 d3.select('#vis-right')
   .append('svg:svg')
@@ -79,7 +82,7 @@ d3.select('#vis-right')
     .attr('x', 0)
     .attr('y', y)
     .attr('dy', '0.5ex')
-    .text(String)
+    .text(d3.format('+'))
 ;
 
 ticks = vis.selectAll('line.tick')
