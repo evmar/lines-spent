@@ -10,6 +10,8 @@ for (var i = 0; i < kData.changes.length; ++i) {
     continue;
 
   commit.baseline = baseline;
+  commit.time = new Date(commit.time * 1000);
+
   data.push(commit);
   if (baseline - commit.del < min)
     min = baseline - commit.del;
@@ -26,12 +28,14 @@ var labelmargin = 2;
 var w = 300;
 var h = data.length * (bargirth + 4) + (margin * 2);
 
-max = Math.max(max, -min);
 var x = d3.scale.linear()
-  .domain([-max, max])
+  .domain([min-100, max+100])
   .range([margin, w - margin]);
 var y = d3.scale.linear()
   .domain([0, data.length])
+  .range([margin + labelheight + labelmargin, h - margin - labelheight - labelmargin]);
+var timescale = d3.time.scale()
+  .domain([data[0].time, data[data.length - 1].time])
   .range([margin + labelheight + labelmargin, h - margin - labelheight - labelmargin]);
 
 var vis = d3.select('#vis')
@@ -72,6 +76,17 @@ ticks.enter().append('svg:line')
 
 var commitbox = vis.append('svg:g');
 
+var timeticks = data.length / 30;
+commitbox.selectAll('text.date')
+    .data(timescale.ticks(timeticks))
+  .enter().append('svg:text')
+    .attr('x', w)
+    .attr('y', timescale)
+    .attr('text-anchor', 'end')
+    .text(d3.time.format('%b %Y'))
+    .style('fill', 'gray')
+;
+
 var commits = commitbox.selectAll('.commit')
     .data(data)
   .enter().append('svg:g')
@@ -95,7 +110,7 @@ commits.append('svg:rect')
 ;
 
 commits.append('svg:title')
-  .text(function(d) { return d.text; })
+  .text(function(d) { return d.msg; })
 ;
 
 d3.select('#git').text(kData.git_args.join(' '));
