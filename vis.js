@@ -53,7 +53,7 @@ var kTickWidth = 42;
 var kTickMargin = 2;
 
 d3.select('#vis-body')
-  .style('margin', '0 ' + (kTickWidth + kTickMargin) + 'px');
+  .style('margin-left', (kTickWidth + kTickMargin) + 'px');
 
 var ticks = y.ticks(5);
 d3.select('#vis-left')
@@ -68,19 +68,6 @@ d3.select('#vis-left')
     .attr('y', y)
     .attr('dy', '0.5ex')
     .attr('text-anchor', 'end')
-    .text(d3.format('+'))
-;
-d3.select('#vis-right')
-  .append('svg:svg')
-    .attr('width', kTickWidth)
-    .attr('height', h)
-  .selectAll('text.tick')
-    .data(ticks)
-  .enter().append('svg:text')
-    .attr('class', 'tick')
-    .attr('x', 0)
-    .attr('y', y)
-    .attr('dy', '0.5ex')
     .text(d3.format('+'))
 ;
 
