@@ -21,92 +21,120 @@ for (var i = 0; i < kData.changes.length; ++i) {
   baseline += commit.add - commit.del;
 }
 
-var bargirth = 8;
+var barwidth = 8;
+var barspacing = 4;
+
 var margin = 0;
 var labelheight = 10;
 var labelmargin = 2;
-var w = 300;
-var h = data.length * (bargirth + 4) + (margin * 2);
+var w = data.length * (barwidth + 4) + (margin * 2);
+var h = 300;
+
 
 var x = d3.scale.linear()
-  .domain([min-100, max+100])
+  .domain([0, data.length])
   .range([margin, w - margin]);
 var y = d3.scale.linear()
-  .domain([0, data.length])
-  .range([margin + labelheight + labelmargin, h - margin - labelheight - labelmargin]);
+  .domain([min-100, max+100])
+  .range([h - margin, margin]);
 var timescale = d3.time.scale()
   .domain([data[0].time, data[data.length - 1].time])
-  .range([margin + labelheight + labelmargin, h - margin - labelheight - labelmargin]);
+  .range([margin, w - margin]);
 
-var vis = d3.select('#vis')
+var vis = d3.select('#vis-body')
   .append('svg:svg')
     .attr('width', w)
     .attr('height', h)
 ;
 
-var ticks = vis.selectAll('text.tick')
-    .data(x.ticks(5))
-;
-ticks.enter().append('svg:text')
+var kTickWidth = 35;
+var kTickMargin = 2;
+
+d3.select('#vis-body')
+  .style('margin', '0 ' + (kTickWidth + kTickMargin) + 'px');
+
+var ticks = y.ticks(5);
+d3.select('#vis-left')
+  .append('svg:svg')
+    .attr('width', kTickWidth)
+    .attr('height', h)
+  .selectAll('text.tick')
+    .data(ticks)
+  .enter().append('svg:text')
     .attr('class', 'tick')
-    .attr('x', x)
-    .attr('y', y(0) - labelmargin)
-    .attr('text-anchor', 'middle')
+    .attr('x', kTickWidth)
+    .attr('y', y)
+    .attr('dy', '0.5ex')
+    .attr('text-anchor', 'end')
     .text(String)
 ;
-ticks.enter().append('svg:text')
+d3.select('#vis-right')
+  .append('svg:svg')
+    .attr('width', kTickWidth)
+    .attr('height', h)
+  .selectAll('text.tick')
+    .data(ticks)
+  .enter().append('svg:text')
     .attr('class', 'tick')
-    .attr('x', x)
-    .attr('y', y(data.length) + labelmargin)
-    .attr('dy', '0.8em')
-    .attr('text-anchor', 'middle')
+    .attr('x', 0)
+    .attr('y', y)
+    .attr('dy', '0.5ex')
     .text(String)
 ;
 
 ticks = vis.selectAll('line.tick')
-    .data(x.ticks(5));
+    .data(y.ticks(5));
 ticks.enter().append('svg:line')
-  .attr('x1', x)
-  .attr('x2', x)
-  .attr('y1', y(0))
-  .attr('y2', y(data.length))
+  .attr('x1', x(0))
+  .attr('x2', x(data.length))
+  .attr('y1', y)
+  .attr('y2', y)
   .style('stroke', function(d) { return d == 0 ? 'black' : 'lightgray'; })
 ;
 
-
-var commitbox = vis.append('svg:g');
-
-var timeticks = data.length / 30;
-commitbox.selectAll('text.date')
-    .data(timescale.ticks(timeticks))
+// Add a date marker every 30 bars or so.
+var time_tick_count = data.length / 30;
+var timeticks = timescale.ticks(time_tick_count);
+vis.selectAll('text.date')
+    .data(timeticks)
   .enter().append('svg:text')
-    .attr('x', w)
-    .attr('y', timescale)
-    .attr('text-anchor', 'end')
+    .attr('x', timescale)
+    .attr('dx', '0.5ex')
+    .attr('y', '0.8em')
     .text(d3.time.format('%b %Y'))
     .style('fill', 'gray')
 ;
+vis.selectAll('line.date')
+    .data(timeticks)
+  .enter().append('svg:line')
+    .attr('x1', timescale)
+    .attr('x2', timescale)
+    .attr('y1', '0')
+    .attr('y2', '1.5em')
+    .style('stroke', 'gray')
+;
 
-var commits = commitbox.selectAll('.commit')
+
+var commits = vis.selectAll('.commit')
     .data(data)
   .enter().append('svg:g')
-    .attr('transform', function(d, i) { return 'translate(0,' + y(i) + ')'; })
+    .attr('transform', function(d, i) { return 'translate(' + x(i) + ',0)'; })
 ;
 
 commits.append('svg:rect')
   .attr('class', 'positive')
-  .attr('height', bargirth)
-  .attr('x', function(d) { return x(d.baseline); })
-  .attr('y', 0)
-  .attr('width', function(d) { return Math.abs(x(d.baseline + d.add) - x(d.baseline)); })
+  .attr('width', barwidth)
+  .attr('x', 0)
+  .attr('y', function(d) { return y(d.baseline + d.add); })
+  .attr('height', function(d) { return Math.abs(y(d.baseline + d.add) - y(d.baseline)); })
 ;
 
 commits.append('svg:rect')
   .attr('class', 'negative')
-  .attr('height', bargirth)
-  .attr('x', function(d) { return x(d.baseline - d.del); })
-  .attr('y', 0)
-  .attr('width', function(d) { return Math.abs(x(d.baseline - d.del) - x(d.baseline)); })
+  .attr('width', barwidth)
+  .attr('x', 0)
+  .attr('y', function(d) { return y(d.baseline); })
+  .attr('height', function(d) { return Math.abs(y(d.baseline - d.del) - y(d.baseline)); })
 ;
 
 commits.append('svg:title')

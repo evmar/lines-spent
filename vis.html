@@ -32,7 +32,22 @@ line {
 }
 
 #vis {
-  margin: 5ex 10ex;
+  position: relative;
+}
+#vis-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#vis-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+#vis-body {
+  overflow-x: scroll;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 </style>
 <body>
@@ -48,9 +63,9 @@ them as "lines produced" but as "lines spent"...<br>
 <p>This visualization shows the accumulated effects of my changes to
 the tree.</p>
 
-<p>Time flows down.  Each bar represents a commit. Green represents
-added lines, red removed lines.  Each bar is centered at the
-cumulative added/removed count from my commits: the first bar is
+<p>Time flows to the right.  Each bar represents a commit. Green
+represents added lines, red removed lines.  Each bar is centered at
+the cumulative added/removed count from my commits: the first bar is
 centered at 0, and if it net added code, the next bar is shifted
 accordingly.</p>
 
@@ -58,7 +73,13 @@ accordingly.</p>
 as are commits that had &gt;1000 adds or deletes (those typically were
 imports or removals of large third-party modules).</p>
 
-<div id='vis'></div>
+<div id='vis'>
+<div id='vis-left'></div>
+<div id='vis-body'></div>
+<div id='vis-right'></div>
+</div>
+
+
 <div id='about'>Computed from <tt>git log <span id='git'></span></tt>.</div>
 <script src='vis.js'></script>
 </body>
